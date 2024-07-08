@@ -59,3 +59,20 @@ export const fetchGameById = createAsyncThunk(
     }
   }
 );
+
+export const getScreenshots = createAsyncThunk(
+  "games/getScreenshots",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.get(`/games/${id}/screenshots`, {
+        params: {
+          key: "8768630ce9a24dd286494efc0a46c443",
+        },
+      });
+      console.log(response.data);
+      return response.data.results;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);

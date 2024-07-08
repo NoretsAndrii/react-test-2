@@ -1,5 +1,10 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { addGames, fetchGameById, fetchGames } from "./gamesOps";
+import {
+  addGames,
+  fetchGameById,
+  fetchGames,
+  getScreenshots,
+} from "./gamesOps";
 
 const handlePending = () => {
   //   state.loading = true;
@@ -17,7 +22,9 @@ const gamesSlice = createSlice({
     page: 1,
     search: "",
     sortValue: "",
-    gameDetals: null,
+    gameDetails: null,
+    isLoadingData: true,
+    screenshots: [],
   },
   extraReducers: (builder) => {
     builder
@@ -26,6 +33,7 @@ const gamesSlice = createSlice({
         state.sortValue = "";
         state.page = 1;
         state.gameDetals = null;
+        state.screenshots = [];
         // state.loading = false;
         // state.error = false;
         state.items = action.payload;
@@ -42,35 +50,50 @@ const gamesSlice = createSlice({
       .addCase(fetchGameById.fulfilled, (state, action) => {
         // state.loading = false;
         // state.error = false;
-        state.gameDetals = action.payload;
+        state.gameDetails = action.payload;
       })
-      .addCase(fetchGameById.rejected, handleRejected);
+      .addCase(fetchGameById.rejected, handleRejected)
+      .addCase(getScreenshots.pending, handlePending)
+      .addCase(getScreenshots.fulfilled, (state, action) => {
+        // state.loading = false;
+        // state.error = false;
+        state.screenshots = action.payload;
+      })
+      .addCase(getScreenshots.rejected, handleRejected);
   },
   reducers: {
     setPage(state) {
+      state.isLoadingData = true;
       state.page += 1;
     },
     setSearch(state, action) {
       state.sortValue = "";
       state.page = 1;
       state.gameDetals = null;
+      state.isLoadingData = true;
       state.search = action.payload;
     },
     setSortValue(state, action) {
       state.sortValue = action.payload;
+    },
+    setIsLoadingData(state, action) {
+      state.isLoadingData = action.payload;
     },
   },
 });
 
 export const gamesReducer = gamesSlice.reducer;
 
-export const { setPage, setSearch, setSortValue } = gamesSlice.actions;
+export const { setPage, setSearch, setSortValue, setIsLoadingData } =
+  gamesSlice.actions;
 
 export const selectGames = (state) => state.games.items;
 export const selectPage = (state) => state.games.page;
 export const selectSearch = (state) => state.games.search;
 export const selectSortValue = (state) => state.games.sortValue;
-export const selectGameDetals = (state) => state.games.gameDetals;
+export const selectGameDetails = (state) => state.games.gameDetails;
+export const selectIsLoadingData = (state) => state.games.isLoadingData;
+export const selectScreenshots = (state) => state.games.screenshots;
 
 export const selectSortedGames = createSelector(
   [selectGames, selectSortValue],

@@ -1,0 +1,13 @@
+.info {
+  display: flex;
+}
+
+.img_box {
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+}
+
+.info_box {
+  width: 50%;
+}
