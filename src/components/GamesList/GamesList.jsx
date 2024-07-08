@@ -1,10 +1,11 @@
 import { useSelector } from "react-redux";
-import { selectGames } from "../../redux/games/gamesSlice";
-import GameCard from "../../GameCard/GameCard";
+import { selectSortedGames } from "../../redux/games/gamesSlice";
+import GameCard from "../GameCard/GameCard";
 import css from "./GamesList.module.css";
+import { Link } from "react-router-dom";
 
 export default function GamesList() {
-  const games = useSelector(selectGames);
+  const games = useSelector(selectSortedGames);
 
   return (
     <div>
@@ -12,7 +13,9 @@ export default function GamesList() {
       <ul className={css.list}>
         {games.map((game) => (
           <li className={css.card} key={game.id}>
-            <GameCard game={game} />
+            <Link to={`/game/${game.id}`} style={{ color: "white" }}>
+              <GameCard game={game} />
+            </Link>
           </li>
         ))}
       </ul>
